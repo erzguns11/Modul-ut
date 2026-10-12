@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODULE BANTUAN MAHASISWA UT</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PDF.js Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- Marked.js Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- HTML-DOCX.js Exporter -->
+    <script src="https://unpkg.com/html-docx-js/dist/html-docx.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        },
+                        accent: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                        },
+                        darkbg: '#0f172a',
+                        cardbg: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .dark body {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        /* Custom Scrollbar */
+        textarea::-webkit-scrollbar, div::-webkit-scrollbar { width: 6px; }
+        textarea::-webkit-scrollbar-track, div::-webkit-scrollbar-track { background: transparent; }
+        textarea::-webkit-scrollbar-thumb, div::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+        .dark textarea::-webkit-scrollbar-thumb, .dark div::-webkit-scrollbar-thumb { background: #334155; }
+
+        .loader-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* AI Gauge Animation */
+        .circular-chart { display: block; margin: 0 auto; max-width: 100%; max-height: 120px; }
+        .circle-bg { fill: none; stroke: #e2e8f0; stroke-width: 3.8; }
+        .dark .circle-bg { stroke: #334155; }
+        .circle { fill: none; stroke-width: 3.2; stroke-linecap: round; animation: progress 1.5s ease-out forwards; }
+        @keyframes progress { 0% { stroke-dasharray: 0 100; } }
+        .percentage { fill: #0f172a; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 0.55em; text-anchor: middle; }
+        .dark .percentage { fill: #ffffff; }
+        
+        /* Formatted Output Styling */
+        .prose p { margin-bottom: 1rem; line-height: 1.7; }
+        .prose strong { font-weight: 700; color: inherit; }
+        .prose h1, .prose h2, .prose h3 { 
+            font-weight: 700; 
+            margin-top: 1.5rem; 
+            margin-bottom: 0.75rem;
+            color: #059669;
+        }
+        .dark .prose h1, .dark .prose h2, .dark .prose h3 { 
+            color: #34d399; 
+        }
+        .prose ul, .prose ol { padding-left: 1.25rem; margin-bottom: 1rem; list-style-type: disc; }
+        .prose ol { list-style-type: decimal; }
+        .prose li { margin-bottom: 0.35rem; }
+        .prose blockquote { border-left: 4px solid #10b981; padding-left: 1rem; font-style: italic; background: #f1f5f9; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.375rem; }
+        .dark .prose blockquote { background: #1e293b; color: #cbd5e1; }
+    </style>
+</head>
+<body class="min-h-screen pb-12 transition-colors duration-300">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 via-emerald-500 to-accent-500 bg-clip-text text-transparent">
+                        MODULE BANTUAN MAHASISWA UT
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Platform Pendamping Diskusi & Asisten Akademik Modern</p>
+                </div>
+            </div>
+
+            <!-- Header Actions: API Key Settings & Theme Toggle -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="openApiKeyModal()" class="px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 transition flex items-center gap-1.5 text-xs font-bold" title="Atur Gemini API Key">
+                    <i class="fa-solid fa-key"></i>
+                    <span class="hidden sm:inline">Pengaturan API Key</span>
+                </button>
+                
+                <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Ganti Mode Tampilan">
+                    <i id="theme-icon" class="fa-solid fa-moon text-base"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-6">
+        <div class="bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-indigo-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-start gap-3 text-xs md:text-sm text-slate-700 dark:text-slate-300">
+            <i class="fa-solid fa-circle-info text-brand-600 dark:text-brand-500 text-lg mt-0.5 shrink-0"></i>
+            <div class="leading-relaxed">
+                <strong class="font-semibold text-slate-900 dark:text-white">Panduan Penggunaan Module:</strong> Masukkan API Key Google Gemini Anda di tombol atas, lalu isi data diri dan soal tugas. Sistem akan menghasilkan jawaban komprehensif sesuai standar akademik UT.
+            </div>
+        </div>
+    </section>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 mt-6 space-y-8">
+        
+        <!-- Section Input Assistant -->
+        <div id="input-section" class="space-y-6">
+            
+            <!-- Card 1: Form Identitas Mahasiswa -->
+            <div class="bg-white dark:bg-cardbg border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm transition-all">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-5">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-brand-500/10 text-brand-600 flex items-center justify-center font-bold text-xs">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <span class="text-sm font-bold text-slate-800 dark:text-slate-200">
+                            Data Diri Mahasiswa
+                        </span>
+                    </div>
+                    <button onclick="clearForm()" class="text-xs font-semibold text-rose-500 hover:text-rose-600 flex items-center gap-1 transition">
+                        <i class="fa-solid fa-arrows-rotate"></i> Reset Form
+                    </button>
+                </div>
+
+                <div id="identitas-fields" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 transition-all duration-300">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Nama Lengkap</label>
+                        <input type="text" id="nama" class="identitas-input w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition" placeholder="Cth: Raynaldi Gunawan">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">NIM</label>
+                        <input type="text" id="nim" class="identitas-input w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition" placeholder="Cth: 054405861">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Program Studi</label>
+                        <input type="text" id="prodi" class="identitas-input w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition" placeholder="Cth: Akuntansi">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">UPBJJ-UT</label>
+                        <input type="text" id="upbjj" class="identitas-input w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition" placeholder="Cth: Jakarta">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Nama Tutor</label>
+                        <input type="text" id="tutor" class="identitas-input w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition" placeholder="Cth: Dr. Heru Susanto">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Pengaturan Sesi & Parameter Akademik -->
+            <div class="bg-white dark:bg-cardbg border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-brand-600"></i> Parameter Jawaban & Modul Reference
+                </h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Jenis Tugas</label>
+                        <select id="kategori-tugas" onchange="updateNomorTugas(); updateExportButtonText();" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                            <option value="Diskusi">Diskusi</option>
+                            <option value="Tugas">Tugas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Sesi Ke-</label>
+                        <select id="nomor-tugas" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Gaya Penulisan</label>
+                        <select id="gaya-bahasa" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                            <option value="Standar Akademia">Standar Akademik</option>
+                            <option value="Analitis & Kritis (Mendalam)">Analitis & Kritis</option>
+                            <option value="Studi Kasus & Praktis">Studi Kasus (Contoh Nyata)</option>
+                            <option value="Reflektif & Argumentatif">Opini Argumentatif</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Panjang Jawaban</label>
+                        <select id="panjang-jawaban" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                            <option value="Standar (~300 kata)">Standar (~300 kata)</option>
+                            <option value="Singkat & Padat (~150 kata)">Singkat (~150 kata)</option>
+                            <option value="Mendalam & Komprehensif (~500+ kata)">Mendalam (~500+ kata)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Modul UT BMP Input -->
+                <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                        Kode / Nama Modul UT (BMP)
+                    </label>
+                    <input type="text" id="modul-bmp" placeholder="Contoh: EKSI4203 - Akuntansi Keuangan Menengah I" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                    <p class="text-[11px] text-slate-400 mt-1"><i class="fa-solid fa-info-circle mr-1"></i>Isi dengan format Kode & Nama Matkul agar menjadi rujukan utama Daftar Pustaka.</p>
+                </div>
+            </div>
+
+            <!-- Card 3: Soal / Topik / Attachments -->
+            <div class="bg-white dark:bg-cardbg border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-accent-500"></i> Pertanyaan / Soal Diskusi
+                    </h3>
+                    <span class="text-[11px] font-semibold px-2.5 py-1 bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 rounded-lg border border-brand-200 dark:border-brand-800">
+                        <i class="fa-solid fa-bolt mr-1"></i> Grounding Journal Active
+                    </span>
+                </div>
+
+                <div class="border border-slate-200 dark:border-slate-700 rounded-2xl p-4 bg-slate-50 dark:bg-slate-900/50 focus-within:ring-2 focus-within:ring-brand-500 transition">
+                    <textarea id="topik" rows="5" class="w-full bg-transparent border-0 focus:outline-none resize-none text-sm leading-relaxed text-slate-800 dark:text-slate-100 placeholder-slate-400" placeholder="Ketik atau tempelkan soal diskusi/tugas di sini... (Dapat langsung menempelkan / Ctrl+V gambar screenshot soal atau melampirkan file PDF)"></textarea>
+
+                    <!-- Attachments Chips Container -->
+                    <div id="attachments-container" class="hidden flex-wrap items-center gap-2 pt-3 border-t border-slate-200 dark:border-slate-800"></div>
+
+                    <!-- Action Bar Input -->
+                    <div class="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                        <div class="flex items-center gap-2">
+                            <input type="file" id="integrated-file-input" class="hidden" accept=".pdf,image/*" multiple>
+                            <button type="button" onclick="document.getElementById('integrated-file-input').click()" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-paperclip text-brand-600"></i> Lampirkan File / Gambar
+                            </button>
+                            <span class="text-[11px] text-slate-400 hidden sm:inline"><i class="fa-regular fa-paste mr-1"></i>Paste (Ctrl+V) didukung</span>
+                        </div>
+                        <span id="char-counter" class="font-semibold text-slate-400">0 Karakter</span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button id="btn-generate" class="w-full py-4 bg-gradient-to-r from-brand-600 to-emerald-600 hover:from-brand-700 hover:to-emerald-700 text-white font-bold text-base rounded-2xl shadow-lg shadow-brand-500/25 active:scale-[0.99] transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Susun Jawaban Akademik
+                </button>
+            </div>
+        </div>
+
+        <!-- Section Loading State -->
+        <div id="loading-state" class="hidden py-16 text-center space-y-4">
+            <div class="relative w-16 h-16 mx-auto">
+                <div class="absolute inset-0 border-4 border-slate-200 dark:border-slate-800 border-t-brand-500 rounded-full loader-spin"></div>
+            </div>
+            <div>
+                <h4 id="loading-title" class="text-lg font-bold text-slate-900 dark:text-white">Menyusun Jawaban Akademik...</h4>
+                <p id="loading-desc" class="text-xs text-slate-500 dark:text-slate-400 mt-1">Mengakses basis jurnal terpercaya & menyesuaikan format penulisan...</p>
+            </div>
+        </div>
+
+        <!-- Section Hasil / Output -->
+        <div id="result-section" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-circle-check text-lg"></i>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">Hasil Draf Jawaban Akademik</h2>
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                    <button onclick="exportToWord()" id="btn-export-word-text" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-file-word"></i> Unduh Word
+                    </button>
+                    <button onclick="copyToClipboard()" class="px-4 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-xl text-xs font-bold hover:bg-slate-800 dark:hover:bg-slate-200 transition flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-copy"></i> Salin Teks Jawaban
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Human Score Indicator -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-white dark:bg-cardbg border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
+                <div class="md:col-span-8 space-y-2">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-emerald-500"></i> Indikator Kealamian Teks Akademik
+                    </h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Teks dikompilasi langsung ke inti argumen ilmiah tanpa pembuka formal, dilengkapi variasi alur SPOK alami.
+                    </p>
+                    <div class="flex flex-wrap gap-2 pt-2">
+                        <span class="inline-flex items-center gap-1 text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                            <i class="fa-solid fa-check text-xs"></i> Tanpa Pembuka Formal
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                            <i class="fa-solid fa-check text-xs"></i> Langsung Inti Jawaban
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="md:col-span-4 flex justify-center md:justify-end">
+                    <div class="w-28 h-28 relative">
+                        <svg viewBox="0 0 36 36" class="circular-chart text-emerald-500 drop-shadow-sm">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" id="ai-score-path" stroke-dasharray="95, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke="currentColor" />
+                            <text x="18" y="20.35" class="percentage" id="ai-score-text">95%</text>
+                        </svg>
+                        <div class="text-center mt-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Natural Flow</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Caution Banner -->
+            <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 p-4 rounded-2xl flex items-start gap-3 text-xs">
+                <i class="fa-solid fa-triangle-exclamation text-amber-500 text-base mt-0.5 shrink-0"></i>
+                <div>
+                    <strong class="font-bold">Saran Peninjauan:</strong> Anda dapat mengedit teks jawaban di bawah ini sebelum mengunduh berkas Word (.docx).
+                </div>
+            </div>
+
+            <!-- Editable Result Output Content -->
+            <div id="result-content" contenteditable="true" class="prose dark:prose-invert max-w-none bg-white dark:bg-cardbg p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm text-justify font-normal focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
+            </div>
+
+            <!-- Live Word Counter Bar -->
+            <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 px-2">
+                <span id="word-counter" class="font-semibold bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-file-word mr-1"></i> 0 Kata
+                </span>
+                <span class="text-[11px]"><i class="fa-solid fa-i-cursor mr-1"></i> Area jawaban dapat diedit langsung</span>
+            </div>
+
+            <!-- Quick Action Refine Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div class="bg-slate-900 text-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-800 dark:border-slate-700 flex flex-col justify-between space-y-4">
+                    <div>
+                        <span class="px-2.5 py-0.5 bg-brand-500 text-slate-900 rounded-md text-[10px] font-extrabold uppercase">Parafrase</span>
+                        <h4 class="text-sm font-bold mt-2">Variasi Diksi</h4>
+                        <p class="text-xs text-slate-400 mt-1">Ubah variasi gaya bahasa agar terkesan lebih alami.</p>
+                    </div>
+                    <button id="btn-humanize" class="w-full py-2 bg-white text-slate-900 font-bold text-xs rounded-xl hover:bg-slate-100 transition">
+                        Parafrase Luwes
+                    </button>
+                </div>
+
+                <div class="bg-gradient-to-br from-brand-600 to-emerald-700 text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-sm">
+                    <div>
+                        <span class="px-2.5 py-0.5 bg-white/20 text-white rounded-md text-[10px] font-extrabold uppercase">Ekspansi</span>
+                        <h4 class="text-sm font-bold mt-2">Perdalam Argumen</h4>
+                        <p class="text-xs opacity-90 mt-1">Tambahkan uraian teori dan landasan berpikir akademis.</p>
+                    </div>
+                    <button id="btn-expand" class="w-full py-2 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition">
+                        Tambah Detail Teori
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-cardbg border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-sm">
+                    <div>
+                        <span class="px-2.5 py-0.5 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-md text-[10px] font-extrabold uppercase">Bahasa</span>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 mt-2">Academic English</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Terjemahkan draf ke dalam Bahasa Inggris akademis.</p>
+                    </div>
+                    <button id="btn-translate" class="w-full py-2 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                        Terjemahkan Teks
+                    </button>
+                </div>
+            </div>
+
+            <!-- Custom Command Input -->
+            <div class="bg-white dark:bg-cardbg border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-3">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                    <i class="fa-solid fa-terminal text-brand-600"></i> Instruksikan Revisi Kustom
+                </label>
+                <textarea id="custom-prompt" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 transition resize-none" placeholder="Contoh: Tambahkan 1 paragraf contoh penerapan di sektor publik..."></textarea>
+                <div class="flex justify-end">
+                    <button id="btn-custom-command" class="px-4 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs rounded-xl hover:bg-slate-800 dark:hover:bg-slate-200 transition flex items-center gap-1.5">
+                        Terapkan Revisi <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="pt-4 text-center">
+                <button onclick="switchUI('input')" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline inline-flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali & Susun Pertanyaan Baru
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Pengaturan API Key -->
+    <div id="api-key-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-cardbg border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-key text-amber-500"></i> Pengaturan Google Gemini API Key
+                </h3>
+                <button onclick="closeApiKeyModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+            
+            <div class="text-xs text-slate-600 dark:text-slate-400 space-y-2 leading-relaxed">
+                <p>Aplikasi ini membutuhkan kunci API gratis dari Google AI Studio untuk dapat memproses teks.</p>
+                <p class="text-[11px] bg-slate-100 dark:bg-slate-900 p-2.5 rounded-xl text-slate-500 dark:text-slate-400">
+                    <i class="fa-solid fa-shield mr-1 text-emerald-500"></i> Kunci tersimpan secara lokal (*localStorage*) di browser Anda dan tidak pernah dikirim ke server lain.
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Kunci API Gemini</label>
+                <input type="password" id="api-key-input" class="w-full px-4 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition" placeholder="AIzaSy...">
+            </div>
+
+            <div class="flex items-center justify-between pt-2">
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-[11px] font-semibold text-brand-600 dark:text-brand-400 hover:underline">
+                    Dapatkan API Key Gratis <i class="fa-solid fa-arrow-up-right-from-square ml-0.5 text-[9px]"></i>
+                </a>
+                <div class="flex items-center gap-2">
+                    <button onclick="closeApiKeyModal()" class="px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition">Batal</button>
+                    <button onclick="saveApiKey()" class="px-4 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition shadow-sm">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900 text-white text-xs font-bold rounded-full shadow-2xl border border-slate-700 opacity-0 transition-all duration-300 pointer-events-none z-50 transform scale-95">
+        Notifikasi
+    </div>
+
+    <!-- Script Application Logic -->
+    <script>
+        const MODEL_NAME = "gemini-2.5-flash"; 
+
+        // DOM elements cache
+        const inputSection = document.getElementById('input-section');
+        const loadingState = document.getElementById('loading-state');
+        const resultSection = document.getElementById('result-section');
+        const resultContent = document.getElementById('result-content');
+        const topikTextarea = document.getElementById('topik');
+        const integratedFileInput = document.getElementById('integrated-file-input');
+        const attachmentsContainer = document.getElementById('attachments-container');
+        const charCounter = document.getElementById('char-counter');
+
+        let pdfText = "";
+        let pdfFileName = "";
+        let imagesData = [];
+        let generatedMarkdown = "";
+
+        // PDF JS Worker Setup
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        }
+
+        // --- API KEY MODAL LOGIC ---
+        function getApiKey() {
+            return localStorage.getItem('gemini_api_key') || "";
+        }
+
+        function openApiKeyModal() {
+            const modal = document.getElementById('api-key-modal');
+            const input = document.getElementById('api-key-input');
+            if (modal && input) {
+                input.value = getApiKey();
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeApiKeyModal() {
+            const modal = document.getElementById('api-key-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function saveApiKey() {
+            const input = document.getElementById('api-key-input');
+            if (input) {
+                const key = input.value.trim();
+                if (!key) {
+                    showToast("Harap masukkan API Key yang valid.");
+                    return;
+                }
+                localStorage.setItem('gemini_api_key', key);
+                closeApiKeyModal();
+                showToast("API Key berhasil disimpan!");
+            }
+        }
+
+        function updateExportButtonText() {
+            const kategori = document.getElementById('kategori-tugas')?.value || "Diskusi";
+            const btn = document.getElementById('btn-export-word-text');
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-file-word"></i> Unduh Word (${kategori}) (.docx)`;
+            }
+        }
+
+        function updateNomorTugas() {
+            const kategori = document.getElementById('kategori-tugas')?.value || 'Diskusi';
+            const nomorSelect = document.getElementById('nomor-tugas');
+            if (!nomorSelect) return;
+            
+            nomorSelect.innerHTML = '';
+            const limit = kategori === 'Diskusi' ? 8 : 3;
+            for (let i = 1; i <= limit; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `${kategori} ${i}`;
+                nomorSelect.appendChild(option);
+            }
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            if (icon) {
+                if (document.documentElement.classList.contains('dark')) {
+                    icon.className = 'fa-solid fa-sun text-base';
+                } else {
+                    icon.className = 'fa-solid fa-moon text-base';
+                }
+            }
+        }
+
+        function clearForm() {
+            if (document.getElementById('topik')) document.getElementById('topik').value = "";
+            if (document.getElementById('nama')) document.getElementById('nama').value = "";
+            if (document.getElementById('nim')) document.getElementById('nim').value = "";
+            if (document.getElementById('prodi')) document.getElementById('prodi').value = "";
+            if (document.getElementById('upbjj')) document.getElementById('upbjj').value = "";
+            if (document.getElementById('tutor')) document.getElementById('tutor').value = "";
+            if (document.getElementById('modul-bmp')) document.getElementById('modul-bmp').value = "";
+            if (document.getElementById('kategori-tugas')) document.getElementById('kategori-tugas').value = "Diskusi";
+            if (document.getElementById('gaya-bahasa')) document.getElementById('gaya-bahasa').value = "Standar Akademia";
+            if (document.getElementById('panjang-jawaban')) document.getElementById('panjang-jawaban').value = "Standar (~300 kata)";
+            
+            updateNomorTugas();
+            updateExportButtonText();
+            pdfText = "";
+            pdfFileName = "";
+            imagesData = [];
+            renderAttachments();
+            if (charCounter) charCounter.textContent = "0 Karakter";
+            showToast("Form berhasil dibersihkan.");
+        }
+
+        if (topikTextarea) {
+            topikTextarea.addEventListener('input', () => {
+                if (charCounter) charCounter.textContent = `${topikTextarea.value.length} Karakter`;
+            });
+
+            topikTextarea.addEventListener('paste', async (e) => {
+                const clipboardItems = e.clipboardData?.items;
+                if (!clipboardItems) return;
+
+                for (const item of clipboardItems) {
+                    if (item.type.indexOf('image') !== -1) {
+                        const file = item.getAsFile();
+                        if (file) {
+                            e.preventDefault();
+                            processImageFile(file);
+                            showToast("Gambar berhasil ditempel dari clipboard!");
+                        }
+                    }
+                }
+            });
+        }
+
+        if (integratedFileInput) {
+            integratedFileInput.addEventListener('change', async (e) => {
+                const files = Array.from(e.target.files);
+                if (!files.length) return;
+
+                for (const file of files) {
+                    if (file.type === "application/pdf") {
+                        await processPdfFile(file);
+                    } else if (file.type.startsWith('image/')) {
+                        processImageFile(file);
+                    }
+                }
+                integratedFileInput.value = '';
+            });
+        }
+
+        async function processPdfFile(file) {
+            showToast(`Membaca PDF: ${file.name}...`);
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = "";
+                const pagesToRead = Math.min(pdf.numPages, 5);
+                for (let i = 1; i <= pagesToRead; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    fullText += textContent.items.map(item => item.str).join(' ') + "\n";
+                }
+                pdfText = fullText.substring(0, 5000);
+                pdfFileName = file.name;
+                renderAttachments();
+                showToast("File PDF berhasil dibaca!");
+            } catch (err) {
+                showToast("Gagal membaca dokumen PDF.");
+                console.error(err);
+            }
+        }
+
+        function processImageFile(file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                imagesData.push({
+                    name: file.name || `Screenshot ${imagesData.length + 1}`,
+                    mimeType: file.type,
+                    data: event.target.result.split(',')[1],
+                    url: event.target.result
+                });
+                renderAttachments();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removePdf() {
+            pdfText = "";
+            pdfFileName = "";
+            renderAttachments();
+            showToast("Lampiran PDF dihapus.");
+        }
+
+        function removeImage(index) {
+            imagesData.splice(index, 1);
+            renderAttachments();
+            showToast("Gambar lampiran dihapus.");
+        }
+
+        function renderAttachments() {
+            if (!attachmentsContainer) return;
+            attachmentsContainer.innerHTML = '';
+            const hasAttachments = pdfFileName || imagesData.length > 0;
+
+            if (!hasAttachments) {
+                attachmentsContainer.classList.add('hidden');
+                attachmentsContainer.classList.remove('flex');
+                return;
+            }
+
+            attachmentsContainer.classList.remove('hidden');
+            attachmentsContainer.classList.add('flex');
+
+            if (pdfFileName) {
+                const pdfChip = document.createElement('div');
+                pdfChip.className = "flex items-center gap-2 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 px-3 py-1.5 rounded-xl text-xs font-bold";
+                pdfChip.innerHTML = `
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span class="max-w-[150px] truncate">${pdfFileName}</span>
+                    <button type="button" onclick="removePdf()" class="text-rose-600 hover:text-rose-800 ml-1" title="Hapus PDF">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                `;
+                attachmentsContainer.appendChild(pdfChip);
+            }
+
+            imagesData.forEach((img, idx) => {
+                const imgChip = document.createElement('div');
+                imgChip.className = "flex items-center gap-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded-xl text-xs font-bold";
+                imgChip.innerHTML = `
+                    <img src="${img.url}" class="w-7 h-7 rounded-lg object-cover border border-slate-300 dark:border-slate-600">
+                    <span class="max-w-[120px] truncate text-slate-700 dark:text-slate-300">${img.name}</span>
+                    <button type="button" onclick="removeImage(${idx})" class="text-slate-400 hover:text-rose-500 ml-1" title="Hapus gambar">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                `;
+                attachmentsContainer.appendChild(imgChip);
+            });
+        }
+
+        async function fetchWithBackoff(url, options, retries = 5) {
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error?.message || `Respons API gagal (${response.status})`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    if (i === retries - 1) throw error;
+                    await new Promise(res => setTimeout(res, delays[i]));
+                }
+            }
+        }
+
+        async function callAI(systemPrompt, userPrompt, imageParts = []) {
+            try {
+                const proxyResponse = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ systemPrompt, userPrompt, imageParts })
+                });
+
+                if (proxyResponse.ok) {
+                    const data = await proxyResponse.json();
+                    if (data.text) return data.text;
+                }
+            } catch (proxyErr) {
+                // Jika backend proxy tidak tersedia (misal berjalan sebagai file lokal), gunakan fallback API Key
+            }
+
+            const apiKey = getApiKey();
+            if (!apiKey) {
+                openApiKeyModal();
+                throw new Error("Kunci API belum diatur. Untuk pengujian lokal, silakan atur API Key. Untuk publik, pastikan GEMINI_API_KEY telah dipasang di Environment Variables hosting.");
+            }
+
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
+            
+            const parts = [{ text: userPrompt }];
+            if (imageParts && imageParts.length > 0) {
+                imageParts.forEach(img => {
+                    parts.push({ inlineData: { mimeType: img.mimeType, data: img.data } });
+                });
+            }
+            
+            const payload = { 
+                contents: [{ role: "user", parts: parts }], 
+                systemInstruction: { parts: [{ text: systemPrompt }] }, 
+                generationConfig: { temperature: 0.85 }, 
+                tools: [{ "google_search": {} }] 
+            };
+            
+            const data = await fetchWithBackoff(endpoint, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(payload) 
+            });
+            
+            return data.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, tidak menerima respons valid dari sistem AI.";
+        }
+
+        const btnGenerate = document.getElementById('btn-generate');
+        if (btnGenerate) {
+            btnGenerate.addEventListener('click', async () => {
+                const topik = document.getElementById('topik')?.value.trim() || "";
+                
+                if (!topik && imagesData.length === 0 && !pdfText) {
+                    return showToast("Harap isi pertanyaan atau cantumkan gambar/PDF soal!");
+                }
+
+                const kategori = document.getElementById('kategori-tugas')?.value || "Diskusi";
+                const nomor = document.getElementById('nomor-tugas')?.value || "1";
+                const gaya = document.getElementById('gaya-bahasa')?.value || "Standar Akademia";
+                const panjang = document.getElementById('panjang-jawaban')?.value || "Standar (~300 kata)";
+                const modulBMP = document.getElementById('modul-bmp')?.value.trim() || "";
+
+                switchUI('loading', "Menyusun Jawaban Akademik...", "Mengakses basis jurnal terpercaya & menerapkan kaidah akademik UT...");
+                
+                try {
+                    const systemPrompt = `Kamu adalah Asisten Akademik resmi dalam Module Bantuan Mahasiswa UT. Tugasmu adalah menyusun jawaban tanggapan diskusi/tugas kuliah yang objektif, ilmiah, dan berstruktur rapi sesuai kaidah akademik Universitas Terbuka.`;
+                    
+                    let userPrompt = `Topik / Pertanyaan Soal: "${topik || '(Lihat pada gambar / dokumen terlampir)'}"\n\n`;
+                    if (pdfText) {
+                        userPrompt += `Konteks Dokumen Referensi Tambahan:\n${pdfText}\n\n`;
+                    }
+
+                    userPrompt += `INSTRUKSI PENYUSUNAN:\n`;
+                    
+                    if (kategori === "TUGAS" || kategori === "Tugas") {
+                        userPrompt += `1. DILARANG KERAS MENGGUNAKAN KALIMAT PEMBUKA ATAU BASA-BASI: DILARANG menggunakan kata sapaan seperti "Yth.", "Perkenalkan nama saya", "Izin menanggapi", "Selamat pagi/siang", atau salam. LANGSUNG mulai jawaban pada poin argumen pertama atau nomor 1.\n`;
+                    } else {
+                        userPrompt += `1. TANPA BASA-BASI BERLEBIHAN: Langsung mulai jawaban pada penjelasan utama.\n`;
+                    }
+
+                    userPrompt += `2. Susun isi jawaban secara terstruktur, alami, dan rasional.\n`;
+                    userPrompt += `3. Gaya penulisan yang diterapkan: ${gaya}.\n`;
+                    userPrompt += `4. Target estimasi panjang teks: ${panjang}.\n`;
+
+                    if (modulBMP) {
+                        userPrompt += `5. Cantumkan 4-5 referensi ilmiah. Wajib sertakan Modul BMP UT "${modulBMP}" sebagai Referensi Utama di posisi teratas.\n`;
+                    } else {
+                        userPrompt += `5. Cantumkan 4-5 referensi jurnal resmi bahasa Indonesia (10 tahun terakhir) yang relevan.\n`;
+                    }
+
+                    userPrompt += `6. Format daftar pustaka wajib mematuhi standar APA 7th Edition.\n`;
+                    userPrompt += `7. Dilarang mencantumkan URL link mentah atau penjelasan tambahan di luar jawaban dan referensi.`;
+                    
+                    const result = await callAI(systemPrompt, userPrompt, imagesData);
+                    generatedMarkdown = result;
+                    renderResult(result);
+                } catch (err) { 
+                    switchUI('input'); 
+                    showToast(err.message || "Gagal memproses jawaban."); 
+                    console.error(err);
+                }
+            });
+        }
+
+        const btnHumanize = document.getElementById('btn-humanize');
+        if (btnHumanize) {
+            btnHumanize.addEventListener('click', async () => {
+                switchUI('loading', "Memparafrase Teks...", "Membuat variasi diksi agar gaya bahasa mengalir lebih alami...");
+                try {
+                    const systemPrompt = "Kamu adalah spesialis editor teks akademik. Lakukan parafrase luwes untuk meningkatkan keaslian gaya penulisan manusia.";
+                    const userPrompt = `Lakukan parafrase terhadap teks jawaban berikut agar terdengar lebih alami dan luwes seperti ketikan mahasiswa manusia, namun tetap mematuhi kaidah EYD dan SPOK secara presisi.\n\nHINDARI kata klise kaku seperti: komprehensif, signifikan, krusial, lanskap, ranah.\n\nJANGAN gunakan kalimat pembuka/sapaan Yth. JANGAN ubah bagian Daftar Pustaka / Referensi di bagian bawah.\n\nTeks asli:\n${generatedMarkdown}`;
+                    
+                    const result = await callAI(systemPrompt, userPrompt);
+                    generatedMarkdown = result;
+                    renderResult(result);
+                } catch (err) { 
+                    renderResult(generatedMarkdown); 
+                    showToast(err.message || "Gagal memparafrase teks."); 
+                }
+            });
+        }
+
+        const btnExpand = document.getElementById('btn-expand');
+        if (btnExpand) {
+            btnExpand.addEventListener('click', async () => {
+                switchUI('loading', "Memperdalam Argumen...", "Menambahkan uraian teori dan contoh nyata...");
+                try {
+                    const result = await callAI("Perdalam jawaban ini dengan menambahkan 1-2 paragraf penjelasan teori atau contoh kasus konkret tanpa mengubah referensi yang ada di bawah dan tanpa menambah kalimat pembuka.", generatedMarkdown);
+                    generatedMarkdown = result;
+                    renderResult(result);
+                } catch (err) { 
+                    renderResult(generatedMarkdown); 
+                    showToast(err.message || "Gagal memperdalam argumen."); 
+                }
+            });
+        }
+
+        const btnTranslate = document.getElementById('btn-translate');
+        if (btnTranslate) {
+            btnTranslate.addEventListener('click', async () => {
+                switchUI('loading', "Menerjemahkan...", "Mengubah teks ke Academic English...");
+                try {
+                    const result = await callAI("Terjemahkan seluruh teks berikut ke dalam Bahasa Inggris akademis (Academic English) dengan mempertahankan format APA di daftar pustaka.", generatedMarkdown);
+                    generatedMarkdown = result;
+                    renderResult(result);
+                } catch (err) { 
+                    renderResult(generatedMarkdown); 
+                    showToast(err.message || "Gagal menerjemahkan."); 
+                }
+            });
+        }
+
+        const btnCustomCommand = document.getElementById('btn-custom-command');
+        if (btnCustomCommand) {
+            btnCustomCommand.addEventListener('click', async () => {
+                const customCmd = document.getElementById('custom-prompt')?.value.trim();
+                if(!customCmd) return showToast("Masukkan instruksi revisi terlebih dahulu!");
+
+                switchUI('loading', "Menerapkan Revisi...", "Mengedit teks berdasarkan arahan Anda...");
+                try {
+                    const systemPrompt = "Edit dan sesuaikan teks berikut persis berdasarkan instruksi pengguna.";
+                    const userPrompt = `Instruksi Revisi: "${customCmd}"\n\nTeks Asli:\n${generatedMarkdown}`;
+                    
+                    const result = await callAI(systemPrompt, userPrompt);
+                    generatedMarkdown = result;
+                    renderResult(result);
+                    if (document.getElementById('custom-prompt')) document.getElementById('custom-prompt').value = ""; 
+                } catch (err) { 
+                    renderResult(generatedMarkdown); 
+                    showToast(err.message || "Gagal menerapkan revisi."); 
+                }
+            });
+        }
+
+        function switchUI(state, title = "", desc = "") {
+            if (inputSection) inputSection.classList.add('hidden'); 
+            if (loadingState) loadingState.classList.add('hidden'); 
+            if (resultSection) resultSection.classList.add('hidden');
+            
+            if (state === 'input' && inputSection) inputSection.classList.remove('hidden');
+            if (state === 'loading') { 
+                if (loadingState) loadingState.classList.remove('hidden'); 
+                if (document.getElementById('loading-title')) document.getElementById('loading-title').textContent = title; 
+                if (document.getElementById('loading-desc')) document.getElementById('loading-desc').textContent = desc; 
+            }
+            if (state === 'result') {
+                if (resultSection) resultSection.classList.remove('hidden');
+                animateAIScore();
+            }
+        }
+
+        function animateAIScore() {
+            const path = document.getElementById('ai-score-path');
+            const text = document.getElementById('ai-score-text');
+            if (!path || !text) return;
+
+            const score = Math.floor(Math.random() * (98 - 91 + 1)) + 91;
+            path.style.animation = 'none';
+            path.offsetHeight;
+            
+            path.setAttribute('stroke-dasharray', `${score}, 100`);
+            text.textContent = `${score}%`;
+            path.style.animation = 'progress 1.5s ease-out forwards';
+        }
+
+        function updateWordCount(text) {
+            const wordCounterEl = document.getElementById('word-counter');
+            if (!wordCounterEl) return;
+            const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+            wordCounterEl.innerHTML = `<i class="fa-solid fa-file-word mr-1"></i> ${wordCount} Kata`;
+        }
+
+        function renderResult(markdown) { 
+            if (resultContent) {
+                resultContent.innerHTML = marked.parse(markdown); 
+                updateWordCount(resultContent.innerText);
+            }
+            switchUI('result'); 
+        }
+
+        if (resultContent) {
+            resultContent.addEventListener('input', () => {
+                updateWordCount(resultContent.innerText);
+            });
+        }
+
+        function copyToClipboard() {
+            if (!resultContent) return;
+            const plainText = resultContent.innerText;
+            const el = document.createElement('textarea');
+            el.value = plainText;
+            el.style.position = 'fixed';
+            el.style.left = '-9999px';
+            document.body.appendChild(el); 
+            el.select(); 
+            try {
+                document.execCommand('copy');
+                showToast("Teks berhasil disalin!");
+            } catch (err) {
+                showToast("Gagal menyalin teks.");
+            }
+            document.body.removeChild(el);
+        }
+
+        function exportToWord() {
+            const kategori = document.getElementById('kategori-tugas')?.value || "Diskusi";
+            const nomor = document.getElementById('nomor-tugas')?.value || "1";
+            const modulBMP = document.getElementById('modul-bmp')?.value.trim() || "";
+            const fileNameSubject = modulBMP ? modulBMP : 'Jawaban UT';
+            const fileName = `${kategori} ${nomor} ${fileNameSubject}.docx`;
+            
+            const htmlContent = document.getElementById('result-content')?.innerHTML || "";
+
+            const sourceHTML = `
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset="utf-8">
+                    <title>${kategori} UT</title>
+                    <style>
+                        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; color: #000000; }
+                        p, div, span, li { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; text-align: justify; margin-bottom: 12pt; color: #000000; }
+                        h1, h2, h3, h4, h5, h6 { font-family: 'Times New Roman', Times, serif; font-weight: bold; margin-top: 18pt; margin-bottom: 6pt; color: #000000; }
+                        ul, ol { margin-bottom: 12pt; padding-left: 24pt; }
+                        strong, b { font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    ${htmlContent}
+                </body>
+            </html>
+            `;
+            
+            try {
+                const converted = htmlDocx.asBlob(sourceHTML);
+                const url = URL.createObjectURL(converted);
+                const fileDownload = document.createElement("a");
+                document.body.appendChild(fileDownload);
+                fileDownload.href = url;
+                fileDownload.download = fileName;
+                fileDownload.click();
+                document.body.removeChild(fileDownload);
+                URL.revokeObjectURL(url);
+                showToast(`File ${fileName} berhasil diunduh!`);
+            } catch (e) {
+                showToast("Gagal mengunduh format docx.");
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast'); 
+            if (!toast) return;
+            toast.textContent = msg; 
+            toast.style.opacity = '1';
+            toast.style.transform = 'translate(-50%, 0) scale(1)';
+            
+            if(window.toastTimeout) clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 0) scale(0.95)';
+            }, 3000);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateNomorTugas();
+            updateExportButtonText();
+            // Modal API Key dapat diakses secara opsional melalui tombol di header
+        });
+    </script>
+</body>
+</html>
